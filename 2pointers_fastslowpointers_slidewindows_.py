@@ -6,66 +6,6 @@ from typing import List
 from typing import Optional
 
 
-class LinkedList:
-    # __init__ will be used to make a LinkedList type object.
-    def __init__(self):
-        self.head = None
-
-    # insert_node_at_head method will insert a LinkedListNode at head
-    # of a linked list.
-    def insert_node_at_head(self, node):
-        if self.head:
-            node.next = self.head
-            self.head = node
-        else:
-            self.head = node
-
-    # create_linked_list method will create the linked list using the
-    # given integer array with the help of InsertAthead method.
-    def create_linked_list(self, lst):
-        for x in reversed(lst):
-            new_node = LinkedListNode(x)
-            self.insert_node_at_head(new_node)
-
-    # returns the number of nodes in the linked list
-    def get_length(self, head):
-        temp = head
-        length = 0
-        while (temp):
-            length += 1
-            temp = temp.next
-        return length
-
-    # returns the node at the specified position(index) of the linked list
-    def get_node(self, head, pos):
-        if pos != -1:
-            p = 0
-            ptr = head
-            while p < pos:
-                ptr = ptr.next
-                p += 1
-            return ptr
-
-    # __str__(self) method will display the elements of linked list.
-    def __str__(self):
-        result = ""
-        temp = self.head
-        while temp:
-            result += str(temp.data)
-            temp = temp.next
-            if temp:
-                result += ", "
-        result += ""
-        return result
-
-
-class LinkedListNode:
-    # __init__ will be used to make a LinkedListNode type object.
-    def __init__(self, data, next=None):
-        self.data = data
-        self.next = next
-
-
 class Solution:
     def removeDuplicates(self, nums: List[int]) -> int:
         i = 0
@@ -636,23 +576,6 @@ class Solution:
             s[j] = temp
             i += 1
             j -= 1
-        print(s)
-
-    def mergeTwoLists(self, list1, list2):
-        new_list_head = new_list = ListNode()
-        while list1 and list2:
-            if list1.val < list2.val:
-                new_list.next = list1
-                list1 = list1.next
-            else:
-                new_list.next = list2
-                list2 = list2.next
-            new_list = new_list.next
-        if list1:
-            new_list.next = list1
-        if list2:
-            new_list.next = list2
-        return new_list_head.next
 
     def backspaceCompare(self, s: str, t: str) -> bool:
         stack_s = []
@@ -901,25 +824,6 @@ class Solution:
             if slow == fast:
                 return False  # Detected a cycle, not a happy number
 
-    def hasCycle(self, head: Optional[LinkedListNode]) -> bool:
-        if head is None:
-            return False
-        slow, fast = head, head
-        while fast and fast.next:
-            slow = slow.next
-            fast = fast.next.next
-            if slow == fast:
-                return True
-        return False
-
-    def middleNode(self, head: Optional[LinkedListNode]) -> Optional[LinkedListNode]:
-        mid_pointer = head
-        end_pointer = head
-        while end_pointer and end_pointer.next:
-            mid_pointer = mid_pointer.next
-            end_pointer = end_pointer.next.next
-        return mid_pointer
-
     def circularArrayLoop(self, nums: List[int]) -> bool:
         # A function to calculate the next step
         def next_step(pointer, value, size):
@@ -970,6 +874,263 @@ class Solution:
                 if slow == fast:
                     return True
         return False
+
+    def findDuplicate(self, nums: List[int]) -> int:
+        fast = slow = nums[0]
+        # PART #1
+        # Traverse in array until the intersection point is found
+        while True:
+            # Move the slow pointer using the nums[slow] flow
+            slow = nums[slow]
+            # Move the fast pointer two times fast as the slow pointer using the
+            # nums[nums[fast]] flow
+            fast = nums[nums[fast]]
+            # Break the loop when slow pointer becomes equal to the fast pointer, i.e.,
+            # if the intersection is found
+            if slow == fast:
+                break
+        # PART #2
+        # Make the slow pointer point the starting position of an array again, i.e.,
+        # start the slow pointer from starting position
+        # Traverse in the array until the slow pointer becomes equal to the
+        # fast pointer
+        slow = nums[0]
+        while slow != fast:
+            # Move the slow pointer using the nums[slow] flow
+            slow = nums[slow]
+            # Move the fast pointer slower than before, i.e., move the fast pointer
+            # using the nums[fast] flow
+            fast = nums[fast]
+        # Return the fast pointer as it points the duplicate number of the array
+        return fast
+
+    def isPalindrome(self, head) -> bool:
+        def reverse_linked_list(pointer):
+            cur = pointer
+            prev = None
+            next = None
+            while cur:
+                next = cur.next
+                cur.next = prev
+                prev = cur
+                cur = next
+            return prev
+        # Initialize slow and fast pointers to the head of the linked list
+        slow = head
+        fast = head
+
+        def compare_two_halves(first_half, second_half):
+            # Compare the corresponding nodes of the first and second halves of the linked list
+            while first_half and second_half:
+                if first_half.data != second_half.data:
+                    return False
+                else:
+                    first_half = first_half.next
+                    second_half = second_half.next
+            return True
+
+        # Find the middle of the linked list using the slow and fast pointers
+        while fast and fast.next:
+            # move slow one step forward
+            slow = slow.next
+            # move fast two steps forward
+            fast = fast.next.next
+        # Reverse the second half of the linked list starting from the middle node
+        reversed_slow = reverse_linked_list(slow)
+        # Compare the first half of the linked list with the reversed second half of the linked list
+        check = compare_two_halves(head, reversed_slow)
+
+        # Re-reverse the second half of the linked list to restore the original linked list
+        revert_data = reverse_linked_list(reversed_slow)
+
+        # Return True if the linked list is a palindrome, else False
+        if check:
+            return True
+        return False
+
+    # Sliding Window
+
+    def findRepeatedDnaSequences(self, s: str):
+        k = 10
+        if len(s) < k:
+            return set()
+
+        subsequences = set()
+        repeated_subsequences = set()
+
+        for i in range(len(s) - k + 1):
+            subsequence = s[i:i + k]
+            if subsequence in subsequences:
+                repeated_subsequences.add(subsequence)
+            else:
+                subsequences.add(subsequence)
+
+        return repeated_subsequences
+
+    def maxSlidingWindow(self, nums: List[int], k: int) -> List[int]:
+        from collections import deque
+        if len(nums) == 1:
+            return nums
+        if k >= len(nums):
+            return [max(nums)]
+        result = []
+        window = deque()
+
+        for i in range(k):
+            while window and nums[i] >= nums[window[-1]]:
+                window.pop()
+            window.append(i)
+
+        for i in range(k, len(nums)):
+            result.append(nums[window[0]])
+
+            while window and window[0] <= i - k:
+                window.popleft()
+
+            while window and nums[i] >= nums[window[-1]]:
+                window.pop()
+            window.append(i)
+
+        result.append(nums[window[0]])
+        return result
+
+    def minWindow(self, s1: str, s2: str) -> str:
+        index_s1 = 0
+        index_s2 = 0
+        min_sub_len = float('inf')
+        # save the size of str1 and str2
+        size_str1, size_str2 = len(s1), len(s2)
+        min_sub_str = ""
+
+        if len(s1) < len(s2):
+            return ""
+        if s1 == s2:
+            return s1
+
+        while index_s1 < size_str1:
+            # check if the character pointed by index_s1 in str1
+            # is the same as the character pointed by index_s2 in str2
+            if s1[index_s1] == s2[index_s2]:
+                # if the pointed character is the same
+                # in both strings increment index_s2
+                if index_s2 == size_str2 - 1:
+                    start = end = index_s1
+                    while index_s2 >= 0:
+                        if s1[start] == s2[index_s2]:
+                            index_s2 -= 1
+                        start -= 1
+                    start += 1
+                    actual_sub_len = end - start + 1
+                    if actual_sub_len < min_sub_len:
+                        min_sub_len = actual_sub_len
+                        min_sub_str = s1[start:end + 1]
+                    index_s1 = start + 1
+                index_s2 += 1
+                index_s1 += 1
+            else:
+                index_s1 += 1
+        return min_sub_str
+
+    def characterReplacement(self, s: str, k: int) -> int:
+        start = 0
+        most_freq_char = 0
+        len_max_str = 0
+        char_map = {}
+        len_s = len(s)
+        for end in range(len_s):
+            if s[end] in char_map:
+                char_map[s[end]] += 1
+            else:
+                char_map[s[end]] = 1
+            most_freq_char = max(most_freq_char, char_map[s[end]])
+
+            if end - start + 1 - most_freq_char > k:
+                char_map[s[start]] -= 1
+                start += 1
+
+            len_max_str = max(end - start + 1, len_max_str)
+        return len_max_str
+
+    def minWindow(self, s: str, t: str) -> str:
+        req_count = {}
+        window = {}
+        res, res_len = [-1, -1], float("infinity")
+
+        if t == "":
+            return t
+
+        # populating req_count hash map
+        for i in t:
+            req_count[i] = 1 + req_count.get(i, 0)
+
+        # populating window hash map
+        for i in t:
+            window[i] = 0
+
+        required = len(req_count)
+        current = 0
+        left = 0
+
+        for right in range(len(s)):
+            c = s[right]
+            # if the current character also occurs in t, update its frequency in window hash map
+            if c in t:
+                window[c] = 1 + window.get(c, 0)
+
+            # updating the current variable
+            if c in req_count and window[c] == req_count[c]:
+                current += 1
+
+                # adjusting the sliding window
+                while current == required:
+                    # update our result
+                    if (right - left + 1) < res_len:
+                        res = [left, right]
+                        res_len = (right - left + 1)
+
+                    # pop from the left of our window
+                    if s[left] in t:
+                        window[s[left]] -= 1
+
+                    # if the popped character was among the required characters and
+                    # removing it has reduced its frequency below its frequency in t, decrement current
+                    if s[left] in req_count and window[s[left]] < req_count[s[left]]:
+                        current -= 1
+                    left += 1
+        left, right = res
+
+        # return the minimum window substring
+        return s[left:right + 1] if res_len != float("infinity") else ""
+
+    def lengthOfLongestSubstring(self, s: str) -> int:
+        if not s:
+            return 0
+
+        max_length = 0
+        char_set = set()
+        left = 0
+
+        for right in range(len(s)):
+            while s[right] in char_set:
+                char_set.remove(s[left])
+                left += 1
+
+            char_set.add(s[right])
+            max_length = max(max_length, right - left + 1)
+
+        return max_length
+
+    def maxProfit(self, prices: List[int]) -> int:
+        max_profit = 0
+        buy_price = prices[0]
+
+        for sell_price in prices[1:]:
+            if buy_price < sell_price:
+                max_profit = max(max_profit, sell_price - buy_price)
+            else:
+                buy_price = sell_price
+
+        return max_profit
 
 
 if __name__ == "__main__":
@@ -1022,4 +1183,11 @@ if __name__ == "__main__":
     # print(s.reverse_words("Hello     World"))
     # print(s.is_palindrome2("abbababb"))
     # print(s.isHappy(4))
-    print(s.hasCycle([2,4,6,8,10]))
+    # print(s.hasCycle([2,4,6,8,10]))
+    # print(s.findDuplicate([1, 5, 4, 3, 2, 4, 6]))
+    # print(s.findRepeatedDnaSequences("AAAAACCCCCAAAAACCCCCCAAAAAGGGTTT"))
+    # print(s.maxSlidingWindow(nums = [7,2,4], k = 2))
+    # print(s.minWindow(s1 = "cnhczmccqouqadqtmjjzl", s2 = "mm"))
+    # print(s.characterReplacement("ABAB", k=2))
+    # print(s.lengthOfLongestSubstring("bbbbb"))
+    print(s.maxProfit([1, 2, 4, 2, 5, 7, 2, 4, 9, 0, 9]))
