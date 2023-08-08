@@ -1,4 +1,5 @@
 import re
+from collections import Counter
 from typing import List
 
 
@@ -1132,6 +1133,18 @@ class Solution:
 
         return max_profit
 
+    def checkInclusion(self, s1: str, s2: str) -> bool:
+        if len(s1) > len(s2):
+            return False
+        s1count = [0] * 26
+        s2count = [0] * 26
+        for i in range(len(s1)):
+            s1count[ord(s1[i]) - ord("a")] += 1
+            s1count[ord(s2[i]) - ord("a")] += 1
+        if s1count == s1count:
+            return True
+        matches = 0
+
 
 if __name__ == "__main__":
     s = Solution()
@@ -1190,4 +1203,5 @@ if __name__ == "__main__":
     # print(s.minWindow(s1 = "cnhczmccqouqadqtmjjzl", s2 = "mm"))
     # print(s.characterReplacement("ABAB", k=2))
     # print(s.lengthOfLongestSubstring("bbbbb"))
-    print(s.maxProfit([1, 2, 4, 2, 5, 7, 2, 4, 9, 0, 9]))
+    # print(s.maxProfit([1, 2, 4, 2, 5, 7, 2, 4, 9, 0, 9]))
+    print(s.checkInclusion(s1 = "ab", s2 = "eidboaoo"))

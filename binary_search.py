@@ -1,3 +1,4 @@
+import math
 import random
 from typing import List
 
@@ -114,6 +115,68 @@ class Solution:
                     end = mid - 1
         return False
 
+    def searchMatrix(self, matrix: List[List[int]], target: int) -> bool:
+        rows, col = len(matrix), len(matrix[0])
+        top = 0
+        bot = rows - 1
+        while top <= bot:
+            row = (top + bot) // 2
+            if target > matrix[row][-1]:
+                top = row + 1
+            elif target < matrix[row][0]:
+                bot = row - 1
+            else:
+                break
+        if not (top <= bot):
+            return False
+        row = (top + bot) // 2
+
+        i = 0
+        j = col - 1
+        while i <= j:
+            m = i + (j - i) // 2
+            if matrix[row][m] > target:
+                j = m - 1
+            elif matrix[row][m] < target:
+                i = m + 1
+            else:
+                return True
+        return False
+
+    def minEatingSpeed(self, piles: List[int], h: int) -> int:
+        i = 1
+        j = max(piles)
+        res = max(piles)
+
+        while i <= j:
+            hours_to_eat = 0
+            mid = (i + j) // 2
+            for pile in piles:
+                hours_to_eat += math.ceil(pile / mid)
+            if hours_to_eat <= h:
+                res = min(mid, res)
+                j = mid - 1
+            else:
+                i = mid + 1
+        return res
+
+    def findMin(self, nums: List[int]) -> int:
+        res = nums[0]
+        l = 0
+        r = len(nums) - 1
+        while l <= r:
+            if nums[l] < nums[r]:
+                res = min(res, nums[l])
+                break
+            mid = (l + r) // 2
+            res = min(res, nums[m])
+            if nums[mid] >= nums[l]:
+                l = mid + 1
+            else:
+                r = mid - 1
+        return res
+
+
     # def firstBadVersion(self, n: int) -> int:
     #     first = 1
     #     last = n
@@ -134,4 +197,6 @@ if __name__ == "__main__":
     # s.binary_search_rotated([3, 1], target=1)
     # s.findClosestElements([1, 2, 3, 4, 5, 6, 7], k=5, x=7)
     # s.singleNonDuplicate([1,1,2,3,3,4,4,8,8])
-    s.search2([1, 0, 1, 1, 1], target=0)
+    # s.search2([1, 0, 1, 1, 1], target=0)
+    # s.searchMatrix(matrix = [[1,3,5,7],[10,11,16,20],[23,30,34,60]], target = 11)
+    s.minEatingSpeed(piles=[3, 6, 7, 11], h=8)
