@@ -101,6 +101,19 @@ class Solution:
             i += 1
         return abs(max_heap[0])
 
+    def lastStoneWeight(self, stones: List[int]) -> int:
+        weights = [-s for s in stones]
+        heapq.heapify(weights)
+
+        while len(weights) > 1:
+            first = heapq.heappop(weights)
+            second = heapq.heappop(weights)
+            dif = abs(first) - abs(second)
+            if dif > 0:
+                heapq.heappush(weights, -dif)
+        weights.append(0)
+        return weights[0]
+
 
 if __name__ == "__main__":
     # Your KthLargest object will be instantiated and called as such:
@@ -111,4 +124,5 @@ if __name__ == "__main__":
     # s.reorganizeString("abb")
     # s.kClosest([[3,3],[5,-1],[-2,4]], k = 2)
     # print(s.topKFrequent([1,1,1,2,2,3], k = 2))
-    s.findKthLargest([3,2,3,1,2,4,5,5,6], k = 4)
+    # s.findKthLargest([3,2,3,1,2,4,5,5,6], k = 4)
+    s.lastStoneWeight([2,7,4,1,8,1])
