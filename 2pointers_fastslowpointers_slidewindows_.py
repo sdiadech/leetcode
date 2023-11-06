@@ -1136,14 +1136,59 @@ class Solution:
     def checkInclusion(self, s1: str, s2: str) -> bool:
         if len(s1) > len(s2):
             return False
-        s1count = [0] * 26
-        s2count = [0] * 26
+
+        s1_counter = {}
+        s2_counter = {}
+
+        # Initialize the character count for s1
+        for char in s1:
+            s1_counter[char] = s1_counter.get(char, 0) + 1
+
+        # Initialize the sliding window for s2
+        left = 0
+        right = len(s1) - 1
+
+        # Initialize the character count for the first window in s2
         for i in range(len(s1)):
-            s1count[ord(s1[i]) - ord("a")] += 1
-            s1count[ord(s2[i]) - ord("a")] += 1
-        if s1count == s1count:
-            return True
-        matches = 0
+            s2_counter[s2[i]] = s2_counter.get(s2[i], 0) + 1
+
+        # Iterate through s2 with the sliding window
+        while right < len(s2):
+            # Check if the current window of s2 has the same character counts as s1
+            if s1_counter == s2_counter:
+                return True
+
+            # Move the sliding window to the right
+            right += 1
+            if right < len(s2):
+                s2_counter[s2[right]] = s2_counter.get(s2[right], 0) + 1
+
+            # Remove the leftmost character from the window
+            s2_counter[s2[left]] -= 1
+            if s2_counter[s2[left]] == 0:
+                del s2_counter[s2[left]]
+
+            left += 1
+
+        return False
+
+    def length_of_longest_substring(self, s):
+        # Initialize a dictionary to store the last seen index of each character.
+        char_index = {}
+        max_length = 0
+        start = 0  # Starting index of the current substring
+
+        for end in range(len(s)):
+            if s[end] in char_index and char_index[s[end]] >= start:
+                # If the character is repeated and its last seen index is within or after the current substring,
+                # update the starting index to the next position of the repeated character.
+                start = char_index[s[end]] + 1
+            char_index[s[end]] = end  # Update the last seen index of the character.
+            max_length = max(max_length, end - start + 1)  # Update the maximum length.
+
+        return max_length
+
+
 
 
 if __name__ == "__main__":
@@ -1205,3 +1250,4 @@ if __name__ == "__main__":
     # print(s.lengthOfLongestSubstring("bbbbb"))
     # print(s.maxProfit([1, 2, 4, 2, 5, 7, 2, 4, 9, 0, 9]))
     print(s.checkInclusion(s1 = "ab", s2 = "eidboaoo"))
+    print(s.length_of_longest_substring('abcabcbb'))

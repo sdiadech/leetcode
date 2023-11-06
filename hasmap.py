@@ -187,6 +187,54 @@ class Logger:
             return True
 
 
+# Python3 program to print subarray with sum as given sum
+
+# Function to print subarray with sum as given sum
+
+
+def subArraySum(arr, total_sum):
+    hm = {}
+    n = len(arr)
+
+    # Maintains sum of elements so far
+    curr_sum = 0
+
+    for i in range(n):
+        # add current element to curr_sum
+        curr_sum = curr_sum + arr[i]
+
+        # if curr_sum is equal to target sum
+        # we found a subarray starting from index 0
+        # and ending at index i
+        if curr_sum == total_sum:
+            print("Sum found between indexes 0 to", i)
+            return
+
+        # If curr_sum - sum already exists in map
+        # we have found a subarray with target sum
+        if (curr_sum - total_sum) in hm:
+            print("Sum found between indexes",
+                  hm[curr_sum - total_sum] + 1, "to", i)
+
+            return
+
+        hm[curr_sum] = i
+    # If we reach here, then no subarray exists
+    print("No subarray with given sum exists")
+
+
+def subarraySum(nums: List[int], k: int) -> int:
+    hm = {0: 1}
+    cur_sum = 0
+    count = 0
+    for n in nums:
+        cur_sum += n
+        if cur_sum - k in hm:
+            count += 1 + hm.get(cur_sum - k, 0)
+        hm[cur_sum] = 1 + hm.get(cur_sum, 0)
+    return count
+
+
 if __name__ == "__main__":
     s = Solution()
     s.nextGreaterElement([1, 2, 3], [1, 2, 3, 4])
@@ -216,5 +264,11 @@ if __name__ == "__main__":
     # r = m.get(2)
     # r = m.remove(2)
     # r = m.get(2)
-    s.findAnagrams(s = "abab", p = "ab")
+    s.findAnagrams(s="abab", p="ab")
 
+    arr = [1, 4, 20, 3, 10, 5]
+    Sum = 33
+
+    # Function call
+    # subArraySum(arr, Sum)
+    subarraySum([1,1,1], 2)

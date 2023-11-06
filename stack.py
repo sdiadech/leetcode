@@ -70,6 +70,45 @@ class Solution:
 
         return result
 
+    def reverse_words(self, s):
+        stack = []
+        res = ""
+        for i in range(len(s)):
+            if s[i] != " ":
+                stack.append(s[i])
+            else:
+                while len(stack) > 0:
+                    char = stack.pop()
+                    res += char
+        res += " "
+        while len(stack) > 0:
+            char = stack.pop()
+            res += char
+        print(res)
+
+    def decodeString(self, s: str) -> str:
+        stack = []
+        cur_num = 0
+        cur_str = ""
+        for c in s:
+            if c.isdigit():
+                cur_num = cur_num * 10 + int(c)
+            elif c == ']':
+                num, prev_str = stack.pop()
+                cur_str = prev_str + num * cur_str
+            elif c == '[':
+                stack.append((cur_num, cur_str))
+                cur_num = 0
+                cur_str = ""
+            else:
+                cur_str += c
+        return cur_str
+
+
+
+
+
+
 
 class MinStack:
     def __init__(self):
@@ -145,7 +184,9 @@ class MyQueue(object):
 
 if __name__ == "__main__":
     s = Solution()
+    # s.reverse_words("Hello Word")
+    s.decodeString("3[a]2[bc]")
     # s.isValid("()[]{}")
     # s.dailyTemperatures([73,74,75,71,69,72,76,73])
     # print(s.removeDuplicates('acc'))
-    print(s.minRemoveToMakeValid("ab)ca(so)(sc(s)("))
+    # print(s.minRemoveToMakeValid("ab)ca(so)(sc(s)("))

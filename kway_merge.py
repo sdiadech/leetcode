@@ -1,3 +1,5 @@
+import heapq
+from collections import Counter
 from heapq import *
 from typing import List
 
@@ -91,6 +93,14 @@ class Solution:
 
         return val
 
+    def topKFrequent(self, nums: List[int], k: int) -> List[int]:
+        freq_map = Counter(nums)
+        min_heap = [(count, num) for num, count in freq_map.items()]
+        heapq.heapify(min_heap)
+        print(min_heap)
+        while len(min_heap) > k:
+            heapq.heappop(min_heap)
+        return [i[1] for i in min_heap]
 
 
 if __name__ == "__main__":
@@ -98,4 +108,5 @@ if __name__ == "__main__":
     # s.merge([1,2,3,0,0,0], 3, [4,5,6], 3)
     # s.kthSmallest([[2,6,8],[3,7,10],[5,8,11]], 5)
     # s.kthSmallest([[], [], []], 5)
-    s.kSmallestPairs([1,1,2], [1,2,3], 3)
+    # s.kSmallestPairs([1,1,2], [1,2,3], 3)
+    s.topKFrequent(nums = [1,1,1,2,2,3], k = 2)

@@ -1,3 +1,4 @@
+from collections import deque
 from typing import List
 
 
@@ -132,9 +133,47 @@ class Solution:
         return False
 
 
+def subset_bfs(nums):
+    subsets = []
+    queue = deque()
+    queue.append([])  # Start with an empty subset.
+
+    while queue:
+        current_subset = queue.popleft()
+        subsets.append(current_subset)
+
+        for num in nums:
+            if not current_subset or num > current_subset[-1]:
+                new_subset = current_subset + [num]
+                queue.append(new_subset)
+
+    return subsets
+
+
+def subset_dfs(nums):
+    result = []
+    subsets = []
+
+    def dfs(i):
+        if i >= len(nums):
+            result.append(subsets[:])  # Append a copy of the current subset
+            return
+        subsets.append(nums[i])
+        dfs(i + 1)
+        subsets.pop()
+        dfs(i + 1)
+        return subsets
+    dfs(0)
+
+    return result
+
+
+
 if __name__ == "__main__":
     s = Solution()
     # o = s.combinationSum(candidates = [2,3,6,7], target = 7)
     # s.permute(nums = [1,2,3])
     # s.subsets(nums=[1, 2, 3])
     s.subsetsWithDup(nums=[1, 2, 2])
+    # print(subset_bfs([1, 5, 3]))
+    print(subset_dfs([1, 5, 3]))
